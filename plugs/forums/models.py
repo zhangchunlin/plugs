@@ -98,14 +98,14 @@ class ForumTopicType(Model):
 
 class ForumTopic(Model):#主题
     forum = Reference('forum', verbose_name='所属主题', collection_name='forum_topics', required=True)
-    topic_type = Reference('forumtopictype', verbose_name='主题类型', collection_name='topic_topictype')
+    topic_type = Reference('forumtopictype', verbose_name='主题类型', collection_name='topic_topictype', nullable=True)
     posted_by = Reference('user', verbose_name='发贴人', default=get_modified_user, auto_add=True, collection_name="user_topics")
     
     subject = Field(str, verbose_name='标题', max_length=999, required=True)
     num_views = Field(int, verbose_name='浏览次数',default = 1)
     num_replies = Field(int, verbose_name='回复总数',default = 1)#posts...
     created_on = Field(datetime.datetime, verbose_name='创建时间', auto_now_add=True)
-    updated_on = Field(datetime.datetime, verbose_name='修改时间')
+    updated_on = Field(datetime.datetime, verbose_name='修改时间', nullable=True)
     last_reply_on = Field(datetime.datetime, verbose_name='最新回复时间')
     last_post_user = Reference('user', verbose_name='最后回复人', collection_name="last_post_user_topics")
     last_post = Field(int, verbose_name='最后发贴id')
@@ -145,18 +145,18 @@ class ForumPost(Model):#can't edit...回复
     posted_by = Reference('user', verbose_name='回复人', default=get_modified_user, auto_add=True, collection_name='user_posts')
     created_on = Field(datetime.datetime, verbose_name='创建时间', auto_now_add=True)
     content = Field(TEXT, verbose_name='文章信息', required=True)
-    updated_on = Field(datetime.datetime, verbose_name='修改时间')
+    updated_on = Field(datetime.datetime, verbose_name='修改时间', nullable=True)
     floor = Field(int, verbose_name='楼层', required=True)
     deleted = Field(bool, verbose_name='删除标志', default=False)
     slug = Field(CHAR, max_length=32, verbose_name='唯一识别串')
-    modified_by = Reference('user', verbose_name='修改人', collection_name='user_modified_posts')
-    deleted_by = Reference('user', verbose_name='删除人', collection_name='user_deleted_posts')
-    deleted_on = Field(datetime.datetime, verbose_name='删除时间')
+    modified_by = Reference('user', verbose_name='修改人', collection_name='user_modified_posts', nullable=True)
+    deleted_by = Reference('user', verbose_name='删除人', collection_name='user_deleted_posts', nullable=True)
+    deleted_on = Field(datetime.datetime, verbose_name='删除时间', nullable=True)
     reply_email = Field(bool, verbose_name='有回复时是否邮件通知')
-    parent = SelfReference(verbose_name='所属回复', collection_name='children_post')
+    parent = SelfReference(verbose_name='所属回复', collection_name='children_post', nullable=True)
     num_replies = Field(int, verbose_name='回复总数',default = 0)
-    last_reply_on = Field(datetime.datetime, verbose_name='最新回复时间')
-    last_post_user = Reference('user', verbose_name='最后回复人', collection_name='last_reply_user_post')
+    last_reply_on = Field(datetime.datetime, verbose_name='最新回复时间', nullable=True)
+    last_post_user = Reference('user', verbose_name='最后回复人', collection_name='last_reply_user_post', nullable=True)
 
     @classmethod
     def OnInit(cls):
